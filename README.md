@@ -77,7 +77,14 @@ npm run sync
 npm run new -- --title "記事タイトル" --emoji "🚀" --topics "JavaScript,React"
 ```
 
-#### 方法2: 対話形式（簡単）
+#### 方法2: Webインターフェース（超簡単！）🌟
+
+```bash
+npm run new -- --web
+# ブラウザが自動的に開いて、フォームで入力できます！
+```
+
+#### 方法3: 対話形式（簡単）
 
 ```bash
 ./create-article.sh

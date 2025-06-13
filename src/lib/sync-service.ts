@@ -93,7 +93,7 @@ export class SyncService {
     emoji?: string;
     type?: 'tech' | 'idea';
     topics?: string[];
-  }): Promise<void> {
+  }): Promise<string> {
     const spinner = ora('Creating new article...').start();
     
     try {
@@ -116,6 +116,7 @@ export class SyncService {
       console.log(chalk.cyan(`npm run dev post ${slug}`));
       
       spinner.succeed(chalk.green('Article created successfully!'));
+      return slug;
     } catch (error) {
       spinner.fail(chalk.red('Failed to create article'));
       throw error;

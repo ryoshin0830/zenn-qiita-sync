@@ -88,8 +88,16 @@ program
   .option('-e, --emoji <emoji>', 'Emoji for Zenn', '📝')
   .option('--type <type>', 'Article type (tech/idea)', 'tech')
   .option('--topics <topics>', 'Comma-separated topics')
+  .option('-w, --web', 'Use web interface')
   .action(async (options) => {
     try {
+      // Web interface mode
+      if (options.web) {
+        const { startWebInterface } = await import('./commands/web-interface.js');
+        await startWebInterface();
+        process.exit(0);
+      }
+      
       if (!options.title) {
         console.error(chalk.red('Title is required'));
         process.exit(1);
