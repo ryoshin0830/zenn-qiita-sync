@@ -56,10 +56,32 @@ npm run dev init
 
 ## 使い方
 
-### 新規記事を作成して両方に投稿
+### 🎯 よく使うコマンド（コピペ用）
 
 ```bash
-npm run dev new --title "記事タイトル" --emoji "🚀" --topics "JavaScript,React"
+# 新規記事作成（これをコピーして編集）
+npm run new -- --title "ここにタイトル" --emoji "📝" --topics "タグ1,タグ2,タグ3"
+
+# 記事を投稿
+npm run post 記事のslug
+
+# 全記事を同期
+npm run sync
+```
+
+### 📝 新規記事を作成
+
+#### 方法1: コマンドライン（推奨）
+
+```bash
+npm run new -- --title "記事タイトル" --emoji "🚀" --topics "JavaScript,React"
+```
+
+#### 方法2: 対話形式（簡単）
+
+```bash
+./create-article.sh
+# タイトル、絵文字、タグを順番に入力
 ```
 
 ### 既存のZenn記事を両方に投稿

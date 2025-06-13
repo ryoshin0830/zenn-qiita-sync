@@ -7,8 +7,12 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/index.ts",
+    "new": "tsx src/index.ts new",
     "post": "tsx src/index.ts post",
     "sync": "tsx src/index.ts sync",
+    "init": "tsx src/index.ts init",
+    "preview:zenn": "tsx src/index.ts preview:zenn",
+    "preview:qiita": "tsx src/index.ts preview:qiita",
     "lint": "eslint src/**/*.ts",
     "typecheck": "tsc --noEmit"
   },
@@ -26,6 +30,7 @@
     "commander": "^11.1.0",
     "dotenv": "^16.3.1",
     "gray-matter": "^4.0.3",
+    "inquirer": "^9.2.12",
     "ora": "^8.0.1",
     "zenn-cli": "^0.1.161"
   },
