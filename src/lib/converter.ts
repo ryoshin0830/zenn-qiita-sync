@@ -12,7 +12,7 @@ export class FrontmatterConverter {
     return {
       title: zennFrontmatter.title,
       tags: zennFrontmatter.topics,
-      private: !zennFrontmatter.published,
+      private: false, // Always publish to Qiita as public
       updated_at: new Date().toISOString(),
       id: existingQiitaId || null,
       organization_url_name: process.env.QIITA_ORGANIZATION || null,
