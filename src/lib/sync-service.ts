@@ -109,12 +109,11 @@ export class SyncService {
       
       console.log(chalk.green(`Created Zenn article: ${slug}`));
       
-      // Optionally post to Qiita immediately
-      const shouldPost = true; // You can make this configurable
-      if (shouldPost) {
-        spinner.text = 'Posting to Qiita...';
-        await this.postArticle(slug);
-      }
+      // Don't post to Qiita immediately when creating new article
+      // User should write content first, then use 'post' command
+      console.log(chalk.yellow(`\n記事を編集してください: articles/${slug}.md`));
+      console.log(chalk.yellow(`編集が完了したら、以下のコマンドで投稿:`));
+      console.log(chalk.cyan(`npm run dev post ${slug}`));
       
       spinner.succeed(chalk.green('Article created successfully!'));
     } catch (error) {
