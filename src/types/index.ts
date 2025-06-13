@@ -9,7 +9,7 @@ export interface ZennFrontmatter {
 
 export interface QiitaFrontmatter {
   title: string;
-  tags: Array<{ name: string }>;
+  tags: string[];
   private: boolean;
   updated_at: string;
   id: string | null;

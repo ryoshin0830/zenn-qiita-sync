@@ -1,5 +1,6 @@
 import { execSync } from 'child_process';
-import { readFile, readdir, existsSync } from 'fs/promises';
+import { readFile, readdir } from 'fs/promises';
+import { existsSync } from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 

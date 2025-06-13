@@ -11,7 +11,7 @@ export class FrontmatterConverter {
   ): QiitaFrontmatter {
     return {
       title: zennFrontmatter.title,
-      tags: zennFrontmatter.topics.map(topic => ({ name: topic })),
+      tags: zennFrontmatter.topics,
       private: !zennFrontmatter.published,
       updated_at: new Date().toISOString(),
       id: existingQiitaId || null,
@@ -32,7 +32,7 @@ export class FrontmatterConverter {
       title: qiitaFrontmatter.title,
       emoji: existingEmoji || '📝',
       type: 'tech',
-      topics: qiitaFrontmatter.tags.map(tag => tag.name).slice(0, 5), // Zenn max 5 topics
+      topics: qiitaFrontmatter.tags.slice(0, 5), // Zenn max 5 topics
       published: !qiitaFrontmatter.private,
       published_at: qiitaFrontmatter.updated_at
     };

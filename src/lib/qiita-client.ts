@@ -1,5 +1,6 @@
 import { execSync } from 'child_process';
-import { readFile, writeFile, readdir, existsSync, mkdir } from 'fs/promises';
+import { readFile, writeFile, readdir, mkdir } from 'fs/promises';
+import { existsSync } from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 import { FrontmatterConverter } from './converter.js';
