@@ -32,6 +32,7 @@ export class ZennClient {
     type?: 'tech' | 'idea';
     emoji?: string;
     topics?: string[];
+    published?: boolean;
   }): Promise<string> {
     try {
       let command = 'npx zenn new:article';
@@ -61,6 +62,11 @@ export class ZennClient {
           await this.updateArticleTopics(slug, options.topics);
         }
         
+        // Set published status if provided
+        if (options?.published !== undefined) {
+          await this.updateArticlePublishedStatus(slug, options.published);
+        }
+        
         return slug;
       }
       
@@ -86,6 +92,25 @@ export class ZennClient {
       await writeFile(filePath, updatedContent);
     } catch (error) {
       console.error(chalk.red('Failed to update article topics:'), error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update article published status
+   */
+  static async updateArticlePublishedStatus(slug: string, published: boolean): Promise<void> {
+    try {
+      const filePath = path.join(this.ARTICLES_DIR, `${slug}.md`);
+      const content = await readFile(filePath, 'utf-8');
+      
+      const { data, content: body } = FrontmatterConverter.parseMarkdown(content);
+      data.published = published;
+      
+      const updatedContent = FrontmatterConverter.stringifyMarkdown(data, body);
+      await writeFile(filePath, updatedContent);
+    } catch (error) {
+      console.error(chalk.red('Failed to update article published status:'), error);
       throw error;
     }
   }

@@ -103,7 +103,8 @@ export class SyncService {
         title: options.title,
         emoji: options.emoji,
         type: options.type,
-        topics: options.topics
+        topics: options.topics,
+        published: true  // Always publish to Zenn
       });
       
       console.log(chalk.green(`Created Zenn article: ${slug}`));
