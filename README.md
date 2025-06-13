@@ -56,17 +56,27 @@ npm run dev init
 
 ## 使い方
 
-### 🎯 よく使うコマンド（コピペ用）
+### 🎯 最速コマンド
 
 ```bash
-# 新規記事作成（これをコピーして編集）
-npm run new -- --title "ここにタイトル" --emoji "📝" --topics "タグ1,タグ2,タグ3"
+# Webで記事作成（一番簡単！）
+npm run web
 
+# もっと短く！
+./web.sh
+```
+
+### 📋 その他のコマンド
+
+```bash
 # 記事を投稿
 npm run post 記事のslug
 
 # 全記事を同期
 npm run sync
+
+# コマンドラインで記事作成
+npm run new -- --title "タイトル" --emoji "📝" --topics "タグ1,タグ2"
 ```
 
 ### 📝 新規記事を作成
