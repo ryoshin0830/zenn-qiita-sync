@@ -102,7 +102,8 @@ export class SyncService {
       const slug = await ZennClient.createArticle({
         title: options.title,
         emoji: options.emoji,
-        type: options.type
+        type: options.type,
+        topics: options.topics
       });
       
       console.log(chalk.green(`Created Zenn article: ${slug}`));
