@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "zenn-qiita-sync": {
+      "command": "node",
+      "args": [
+        "/Users/username/projects/zenn-qiita-sync/mcp-server/build/index.js"
+      ],
+      "env": {
+        "QIITA_TOKEN": "your_qiita_api_token_here"
+      }
+    }
+  }
+}

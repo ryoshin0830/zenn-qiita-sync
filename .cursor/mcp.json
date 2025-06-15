@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "zenn-qiita-sync": {
+      "command": "node",
+      "args": [
+        "./mcp-server/build/index.js"
+      ]
+    }
+  }
+}

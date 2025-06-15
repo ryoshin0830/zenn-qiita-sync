@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && cd mcp-server && npm run build",
     "dev": "tsx src/index.ts",
     "web": "tsx src/index.ts new --web",
     "new": "tsx src/index.ts new",
@@ -15,7 +15,10 @@
     "preview:zenn": "tsx src/index.ts preview:zenn",
     "preview:qiita": "tsx src/index.ts preview:qiita",
     "lint": "eslint src/**/*.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "mcp:install": "cd mcp-server && npm install",
+    "mcp:build": "cd mcp-server && npm run build",
+    "mcp:dev": "cd mcp-server && npm run dev"
   },
   "keywords": [
     "zenn",

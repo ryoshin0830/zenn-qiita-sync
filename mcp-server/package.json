@@ -1,0 +1,39 @@
+{
+  "name": "zenn-qiita-sync-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for synchronizing articles between Zenn and Qiita",
+  "type": "module",
+  "main": "./build/index.js",
+  "bin": {
+    "zenn-qiita-sync-mcp": "./build/index.js"
+  },
+  "scripts": {
+    "build": "tsc && chmod +x build/index.js || true",
+    "dev": "tsx src/index.ts",
+    "inspect": "npx @modelcontextprotocol/inspector node build/index.js",
+    "clean": "rm -rf build"
+  },
+  "files": [
+    "build"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.7.0",
+    "gray-matter": "^4.0.3",
+    "dotenv": "^16.4.5",
+    "zod": "^3.24.1",
+    "zod-to-json-schema": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.6",
+    "typescript": "^5.7.3",
+    "tsx": "^4.20.0"
+  },
+  "keywords": [
+    "mcp",
+    "zenn",
+    "qiita",
+    "sync"
+  ],
+  "author": "",
+  "license": "MIT"
+}
