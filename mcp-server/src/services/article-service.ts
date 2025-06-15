@@ -97,7 +97,7 @@ export class ArticleService {
         published: data.published,
         syncStatus: qiitaId ? 'synced' : 'not-synced',
         qiitaId: qiitaId || undefined,
-        zennUrl: data.published ? `https://zenn.dev/articles/${zennArticle.slug}` : undefined,
+        zennUrl: undefined,
         qiitaUrl: qiitaId ? `https://qiita.com/items/${qiitaId}` : undefined,
       });
     }

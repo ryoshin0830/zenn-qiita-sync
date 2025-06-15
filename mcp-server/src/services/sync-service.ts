@@ -91,7 +91,7 @@ export class ZennQiitaSyncService {
     }
     
     return {
-      zennUrl: `https://zenn.dev/articles/${zennSlug}`,
+      zennUrl: undefined,
       qiitaUrl: qiitaId ? `https://qiita.com/items/${qiitaId}` : undefined,
     };
   }
