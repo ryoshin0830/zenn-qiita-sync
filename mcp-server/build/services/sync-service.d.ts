@@ -1,5 +1,4 @@
 export interface PostResult {
-    zennUrl?: string;
     qiitaUrl?: string;
 }
 export interface SyncResult {

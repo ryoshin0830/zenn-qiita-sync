@@ -65,7 +65,7 @@ export class ArticleService {
       emoji: params.emoji || '📝',
       type: params.type || 'tech',
       topics: params.topics || [],
-      published: params.published ?? false,
+      published: params.published ?? true,
     });
     
     return {

@@ -49,8 +49,9 @@ export class ZennQiitaSyncService {
         if (qiitaId) {
             await SyncStorage.updateMapping(zennSlug, qiitaId);
         }
+        // Publish to Zenn by pushing to GitHub
+        await this.publishZennArticles(`Publish article: ${zennSlug}`, true);
         return {
-            zennUrl: `https://zenn.dev/articles/${zennSlug}`,
             qiitaUrl: qiitaId ? `https://qiita.com/items/${qiitaId}` : undefined,
         };
     }
@@ -125,7 +126,6 @@ export class ZennQiitaSyncService {
             existingProcess.kill();
             this.previewProcesses.delete(platform);
         }
-        const command = platform === 'zenn' ? 'zenn preview' : 'qiita preview';
         const defaultPort = platform === 'zenn' ? 8000 : 8888;
         const previewProcess = spawn(platform, ['preview'], {
             cwd: getProjectRoot(),

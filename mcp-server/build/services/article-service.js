@@ -21,7 +21,7 @@ export class ArticleService {
             emoji: params.emoji || '📝',
             type: params.type || 'tech',
             topics: params.topics || [],
-            published: params.published ?? false,
+            published: params.published ?? true,
         });
         return {
             slug,
@@ -48,7 +48,7 @@ export class ArticleService {
                 published: data.published,
                 syncStatus: qiitaId ? 'synced' : 'not-synced',
                 qiitaId: qiitaId || undefined,
-                zennUrl: data.published ? `https://zenn.dev/articles/${zennArticle.slug}` : undefined,
+                zennUrl: undefined,
                 qiitaUrl: qiitaId ? `https://qiita.com/items/${qiitaId}` : undefined,
             });
         }
