@@ -7,6 +7,10 @@ import { ArticleService } from "./services/article-service.js";
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import { getProjectRoot } from './utils/cli.js';
+import { XHelper } from './lib/x-helper.js';
+import dotenv from 'dotenv';
+// Load environment variables
+dotenv.config();
 // Parameter schemas
 const InitSchema = z.object({});
 const CreateArticleSchema = z.object({
@@ -25,9 +29,25 @@ const EditArticleSchema = z.object({
     slug: z.string().describe("Article slug (filename without .md)"),
     content: z.string().describe("Article content in markdown format"),
 });
+const PostToXSchema = z.object({
+    title: z.string().describe("Article title"),
+    topics: z.array(z.string()).describe("Article topics/tags"),
+    qiitaUrl: z.string().describe("Qiita URL of the posted article"),
+});
 // Initialize services
 const syncService = new ZennQiitaSyncService();
 const articleService = new ArticleService(syncService);
+let xHelper = null;
+// Initialize X helper if credentials are available
+if (process.env.X_API_KEY && process.env.X_API_SECRET &&
+    process.env.X_ACCESS_TOKEN && process.env.X_ACCESS_TOKEN_SECRET) {
+    xHelper = new XHelper({
+        appKey: process.env.X_API_KEY,
+        appSecret: process.env.X_API_SECRET,
+        accessToken: process.env.X_ACCESS_TOKEN,
+        accessSecret: process.env.X_ACCESS_TOKEN_SECRET,
+    });
+}
 // Create MCP server
 const server = new Server({
     name: "zenn-qiita-sync",
@@ -66,6 +86,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 name: "post_article",
                 description: "Post an article to both Zenn and Qiita",
                 inputSchema: zodToJsonSchema(PostArticleSchema),
+            },
+            {
+                name: "post_to_x",
+                description: "Post article summary to X (Twitter) with Qiita URL",
+                inputSchema: zodToJsonSchema(PostToXSchema),
             },
         ],
     };
@@ -138,6 +163,22 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                         {
                             type: "text",
                             text: `Article posted successfully!\nQiita: ${result.qiitaUrl || "Not available"}\n\nAll .md files have been deleted.`,
+                        },
+                    ],
+                };
+            }
+            case "post_to_x": {
+                const params = PostToXSchema.parse(args);
+                log("info", "Posting to X", params);
+                if (!xHelper) {
+                    throw new McpError(ErrorCode.InternalError, "X (Twitter) credentials not configured");
+                }
+                const result = await xHelper.postArticleSummary(params.title, params.topics, params.qiitaUrl);
+                return {
+                    content: [
+                        {
+                            type: "text",
+                            text: `Posted to X successfully!\nTweet URL: ${result.url}`,
                         },
                     ],
                 };
