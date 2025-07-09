@@ -1,0 +1,278 @@
+---
+title: Git Subtreeで既存プロジェクトをモノレポに統合する実践ガイド
+emoji: "\U0001F333"
+type: tech
+topics:
+  - git
+  - monorepo
+  - 開発環境
+  - チーム開発
+published: false
+---
+# Git Subtreeで既存プロジェクトをモノレポに統合する実践ガイド
+
+## はじめに
+
+モノレポ（monorepo）での開発が一般的になる中、既存の独立したプロジェクトをモノレポに統合したいケースがよくあります。特に、実験的なプロジェクトや新機能をチームで共有・評価したい場合、適切な統合方法を選択することが重要です。
+
+本記事では、Git Subtreeを使用して既存のプロジェクトをモノレポに統合する実践的な方法を解説します。
+
+## 想定シナリオ
+
+- **既存のモノレポ**: 複数のサービスが管理されているメインリポジトリ
+- **統合したいプロジェクト**: 独立したGitリポジトリで開発された実験的なプロジェクト
+- **目的**: チームメンバーが簡単にアクセスできるよう、プロジェクトを共有
+- **制約**: 実験段階のため、既存システムへの影響を最小限に抑えたい
+
+## Git SubtreeとSubmoduleの比較
+
+### Git Submodule
+
+**特徴**:
+- 別のリポジトリへの**参照**を保持
+- 各サブモジュールは独立したGitリポジトリ
+- `.gitmodules`ファイルで管理
+
+**メリット**:
+- 元のリポジトリとの独立性が保たれる
+- 複数のプロジェクトで同じサブモジュールを使い回せる
+
+**デメリット**:
+- 初回クローン時に`git clone --recursive`が必要
+- サブモジュールの更新が複雑
+- チーム開発で混乱しやすい
+
+### Git Subtree
+
+**特徴**:
+- 別のリポジトリのコードを直接**コピー**
+- 履歴も一緒にマージ可能
+- 通常のディレクトリとして扱える
+
+**メリット**:
+- クローン時に特別な操作不要
+- シンプルで理解しやすい
+- チーム開発でトラブルが少ない
+
+**デメリット**:
+- リポジトリサイズが大きくなる
+- 元のリポジトリとの同期が手動
+
+## 実装手順
+
+### 1. 現在の状況確認
+
+まず、モノレポとプロジェクトの現在の状況を確認します。
+
+```bash
+# モノレポの構造確認
+ls -la
+# backend/
+# frontend/
+# infrastructure/
+# docs/
+```
+
+```bash
+# 統合したいプロジェクトの確認
+ls -la ../awesome-ai-tool/
+# backend/
+# frontend/
+# docs/
+# tests/
+# README.md
+```
+
+### 2. ブランチの作成
+
+新しいフィーチャーブランチを作成します。
+
+```bash
+# メインブランチから最新を取得
+git checkout main  # または dev
+git pull origin main
+
+# 新しいブランチを作成
+git checkout -b feature/integrate-awesome-ai-tool
+```
+
+### 3. ディレクトリ構造の設計
+
+実験的なプロジェクトを配置するディレクトリを決定します。
+
+```bash
+# 実験的プロジェクト用ディレクトリを作成
+mkdir -p experimental
+```
+
+**推奨ディレクトリ構造**:
+```
+monorepo/
+├── backend/              # 既存のバックエンド
+├── frontend/             # 既存のフロントエンド
+├── experimental/         # 実験的プロジェクト
+│   ├── README.md        # ディレクトリの説明
+│   └── awesome-ai-tool/ # 統合するプロジェクト
+└── infrastructure/       # 既存のインフラ
+```
+
+### 4. Git Subtreeでプロジェクトを追加
+
+```bash
+# Git Subtreeを使用してプロジェクトを追加
+git subtree add --prefix=experimental/awesome-ai-tool /path/to/awesome-ai-tool main --squash
+```
+
+**オプションの説明**:
+- `--prefix=experimental/awesome-ai-tool`: 配置先のディレクトリ
+- `/path/to/awesome-ai-tool`: 統合するプロジェクトのパス
+- `main`: 統合するブランチ
+- `--squash`: 履歴を1つのコミットにまとめる
+
+### 5. 説明用READMEの作成
+
+```bash
+# experimental/README.md を作成
+cat > experimental/README.md << 'EOF'
+# Experimental Projects
+
+このディレクトリには、本番環境への統合前に評価・検証中の実験的なプロジェクトが含まれています。
+
+## プロジェクト一覧
+
+### awesome-ai-tool
+- **概要**: AI駆動の○○システム
+- **ステータス**: 実験中
+- **技術**: FastAPI, React, LangChain
+- **目的**: ○○の効率化と品質向上
+
+## 注意事項
+- これらのプロジェクトは実験段階であり、本番環境では使用しないでください
+- APIやインターフェースは予告なく変更される可能性があります
+
+## 開発者向け情報
+
+### 実行方法
+\`\`\`bash
+cd experimental/awesome-ai-tool
+npm install  # または yarn install
+npm start
+\`\`\`
+EOF
+
+git add experimental/README.md
+```
+
+### 6. 変更をコミット
+
+```bash
+git commit -m "feat: Add awesome-ai-tool as experimental project
+
+- Added awesome-ai-tool project under experimental/ directory using git subtree
+- This is an experimental AI-powered system for evaluation
+- Maintained as independent service for testing phase
+- Added experimental/README.md to clarify the purpose"
+```
+
+### 7. リモートリポジトリにプッシュ
+
+```bash
+git push origin feature/integrate-awesome-ai-tool
+```
+
+## ディレクトリ構造設計のベストプラクティス
+
+### 1. 実験的プロジェクトの配置
+
+```
+experimental/
+├── README.md           # 実験的プロジェクトの説明
+├── awesome-ai-tool/   # 統合したプロジェクト
+└── future-project/    # 将来の実験的プロジェクト
+```
+
+### 2. 命名規則
+
+- **`experimental/`**: 実験段階であることが明確
+- **`labs/`**: 研究開発的な印象
+- **`projects/`**: より汎用的な名前
+- **`services/`**: マイクロサービス志向
+
+### 3. 段階的な統合パス
+
+```
+1. experimental/awesome-ai-tool/  # 実験段階
+2. services/awesome-ai-tool/      # 独立サービス
+3. backend/awesome-ai-tool/       # 本格統合
+```
+
+## 運用上の注意点
+
+### 1. 更新の同期
+
+元のリポジトリが更新された場合の同期方法：
+
+```bash
+# 元のリポジトリから更新を取り込む
+git subtree pull --prefix=experimental/awesome-ai-tool /path/to/awesome-ai-tool main --squash
+```
+
+### 2. 履歴の管理
+
+- `--squash`オプションを使用して履歴を簡潔に保つ
+- 必要に応じて、詳細な履歴を保持することも可能
+
+### 3. 依存関係の管理
+
+```bash
+# モノレポのpackage.jsonにワークスペースを追加
+{
+  "workspaces": [
+    "frontend",
+    "backend",
+    "experimental/awesome-ai-tool"
+  ]
+}
+```
+
+## トラブルシューティング
+
+### 1. 履歴の競合
+
+```bash
+# 履歴が競合した場合の対処
+git subtree add --prefix=experimental/awesome-ai-tool /path/to/awesome-ai-tool main --squash --strategy=subtree -X subtree=experimental/awesome-ai-tool/
+```
+
+### 2. 大きなリポジトリの統合
+
+```bash
+# 特定のディレクトリのみを統合
+git subtree add --prefix=experimental/awesome-ai-tool /path/to/awesome-ai-tool main --squash
+```
+
+### 3. 権限の問題
+
+```bash
+# リモートリポジトリから統合する場合
+git subtree add --prefix=experimental/awesome-ai-tool https://github.com/user/awesome-ai-tool.git main --squash
+```
+
+## まとめ
+
+Git Subtreeを使用した既存プロジェクトのモノレポ統合は、以下の利点があります：
+
+1. **簡単な共有**: チームメンバーが特別な操作なしでアクセス可能
+2. **実験的な性質の明確化**: `experimental/`ディレクトリで意図を明確に
+3. **段階的な統合**: 実験成功後の本格統合パスを用意
+4. **履歴の保持**: 必要に応じて開発履歴を維持
+
+この手法により、既存のモノレポ構造を壊すことなく、新しいプロジェクトをチームで共有・評価することができます。
+
+実験が成功した場合は、適切な本番環境への統合パスを検討し、失敗した場合は簡単に削除できるため、リスクを最小限に抑えた統合が可能です。
+
+## 参考資料
+
+- [Git Subtree Documentation](https://git-scm.com/docs/git-subtree)
+- [Monorepo Best Practices](https://monorepo.tools/)
+- [Git Submodule vs Subtree](https://www.atlassian.com/git/articles/git-subtree)
